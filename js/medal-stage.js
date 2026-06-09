@@ -80,7 +80,7 @@ if (canvas && showcase) {
     const vh = window.innerHeight;
     // Square source: fit by height, push the piece to the RIGHT so the
     // left text column stays clear. Mobile centers it, higher and smaller.
-    if (isMobile())  return { scale: (vh / SRC_H) * 0.52, ox: 0.3,  oy: 0.12 };
+    if (isMobile())  return { scale: (vh / SRC_H) * 0.46, ox: 0.0,  oy: -0.28 };
     if (isTablet())  return { scale: (vh / SRC_H) * 0.918, ox: 0.15, oy: 0.0 };
     return                  { scale: (vh / SRC_H) * 1.044, ox: 0.205, oy: 0.0 };
   }
