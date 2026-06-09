@@ -54,9 +54,10 @@
   }
 
   // Caixa real da medalha + fita dentro do quadro, medida em TODOS os
-  // ângulos do giro (união): X 0.21–0.78, Y 0–0.94. Recortamos as margens
-  // pretas com folga para a medalha NUNCA ser cortada ao girar.
-  const BB = { x0: 0.18, y0: 0.0, x1: 0.81, y1: 0.95 };
+  // ângulos do giro (união): X 0.21–0.78, Y 0–0.94.
+  // y0 sobe (corta o excesso de fita no topo) p/ a MEDALHA dominar o quadro
+  // — a fita ainda sobe e sai por cima (enquadramento "herói", como no print).
+  const BB = { x0: 0.18, y0: 0.26, x1: 0.81, y1: 0.96 };
   function draw(p) {
     const r = cv.getBoundingClientRect();
     const cw = r.width, ch = r.height;
@@ -66,10 +67,10 @@
     const iw = im.naturalWidth, ih = im.naturalHeight;
     const sx = iw * BB.x0, sy = ih * BB.y0;
     const sw = iw * (BB.x1 - BB.x0), sh = ih * (BB.y1 - BB.y0);
-    const scale = Math.min(cw / sw, ch / sh) * 0.94; // respiro p/ nunca encostar nas bordas
+    const scale = Math.min(cw / sw, ch / sh) * 1.18; // preenche o quadro (medalha grande, leve sangria)
     const dw = sw * scale, dh = sh * scale;
     const dx = (cw - dw) / 2;          // centralizado na horizontal
-    const dy = (ch - dh) * 0.30;       // perto do topo (emenda), com respiro p/ não cortar a fita
+    const dy = (ch - dh) * 0.46;       // medalha centralizada; a fita sobe e sai por cima
     ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
   }
 
