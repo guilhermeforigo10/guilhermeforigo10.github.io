@@ -36,7 +36,7 @@ const MEDAL_SOURCE = {
   video:  { mp4: HOSTED_MP4 || 'assets/medal-orbit.mp4' },
 };
 // Render de origem é um quadro QUADRADO 1000×1000 (órbita do troféu + medalha).
-const SRC_W = 1000, SRC_H = 1000;
+const SRC_W = 1440, SRC_H = 1440;
 
 const canvas = document.getElementById('medalStage');
 const showcase = document.getElementById('showcase');
@@ -80,7 +80,7 @@ if (canvas && showcase) {
     const vh = window.innerHeight;
     // Square source: fit by height, push the piece to the RIGHT so the
     // left text column stays clear. Mobile centers it, higher and smaller.
-    if (isMobile())  return { scale: (vh / SRC_H) * 0.576, ox: 0.0,  oy: -0.16 };
+    if (isMobile())  return { scale: (vh / SRC_H) * 0.62, ox: 0.0,  oy: -0.22 };
     if (isTablet())  return { scale: (vh / SRC_H) * 0.918, ox: 0.15, oy: 0.0 };
     return                  { scale: (vh / SRC_H) * 1.044, ox: 0.205, oy: 0.0 };
   }
