@@ -30,7 +30,7 @@
     --sh-card:0 26px 60px -22px rgba(0,0,0,.74),0 8px 20px -10px rgba(0,0,0,.5);
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth;background:var(--ink)}
+  html{scroll-behavior:smooth;background:var(--ink);overflow-x:hidden;width:100%;max-width:100%}
   body{font-family:var(--sans);background:var(--ink);color:var(--fg-d);line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-optical-sizing:auto;font-feature-settings:"kern" 1,"liga" 1,"calt" 1;font-kerning:normal;overflow-x:hidden}
   a{text-decoration:none;color:inherit}
   img{display:block;max-width:100%}
@@ -67,7 +67,7 @@
   html{scrollbar-color:#2c2c2c #070708}
 
   /* ---------- Medal stage (scroll-scrubbed) ---------- */
-  #medalStage{position:fixed;inset:0;z-index:1;pointer-events:none}
+  #medalStage{position:fixed;inset:0;z-index:1;pointer-events:none;width:100vw;max-width:100vw;height:100vh}
   #stageScrim{position:fixed;inset:0;z-index:2;pointer-events:none;
     background:linear-gradient(90deg,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.6) 26%,rgba(0,0,0,0.12) 50%,rgba(0,0,0,0) 64%),
                linear-gradient(0deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0) 26%)}
@@ -378,6 +378,7 @@
     .gallery{grid-template-columns:repeat(2,1fr)}
     .gitem.big{grid-column:span 2;grid-row:span 1;aspect-ratio:16/10}
     .guar{grid-template-columns:1fr;text-align:center;justify-items:center;padding:44px 28px;gap:34px}
+    .guar-sec{padding-top:48px}
     .medal-wrap{align-self:auto;width:min(340px,80vw);height:min(420px,96vw);margin:0 auto -10px}
     .foot-grid{grid-template-columns:1fr 1fr}
     .pad{padding:82px 0}
@@ -410,7 +411,9 @@
     .hero-copy{max-width:none}
     .hero h1{font-size:clamp(26px,6.6vw,40px);margin-bottom:20px;overflow-wrap:break-word;word-break:normal;hyphens:auto;max-width:100%}
     .wrap{padding:0 20px}
-    .hero .lead{font-size:16px;max-width:none;margin-bottom:26px}
+    .hero .lead{font-size:16px;max-width:100%;width:100%;margin-bottom:26px;overflow-wrap:break-word;box-sizing:border-box}
+    .hero-copy{max-width:100%;width:100%;box-sizing:border-box}
+    .hero-copy *{max-width:100%;box-sizing:border-box}
     .eyebrow{margin-bottom:20px;font-size:11.5px}
     .hcta{flex-direction:column;align-items:stretch;gap:11px}
     .hcta .btn{width:100%;justify-content:center;padding:16px 22px;font-size:15.5px}
