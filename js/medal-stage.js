@@ -32,11 +32,11 @@ const HOSTED_MP4 = '';   // ← cole aqui o .mp4 hospedado (Gumlet/servidor)
 
 const MEDAL_SOURCE = {
   type: 'frames',                // 'frames' | 'video' | 'three'
-  frames: { dir: 'frames/', prefix: 'medal_', count: 121, pad: 4, ext: 'jpg' },
+  frames: { dir: 'frames/', prefix: 'medal_', count: 120, pad: 4, ext: 'jpg' },
   video:  { mp4: HOSTED_MP4 || 'assets/medal-orbit.mp4' },
 };
 // Render de origem é um quadro QUADRADO 1000×1000 (órbita do troféu + medalha).
-const SRC_W = 1440, SRC_H = 1440;
+const SRC_W = 1000, SRC_H = 1000;
 
 const canvas = document.getElementById('medalStage');
 const showcase = document.getElementById('showcase');
