@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Área do Cliente · Acompanhe seu pedido · GM Troféus</title>
+<meta name="description" content="Acompanhe a produção do seu pedido GM Troféus. Consulte pelo CPF e veja status, prazo em contrato e etapas de fabricação.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" href="assets/mark-white.png">
+<link rel="stylesheet" href="eventos.css">
+<style>
+  /* ---------- Área do Cliente ---------- */
+  .cli{padding:148px 0 110px;min-height:100vh}
+  .cli .wrap{max-width:760px}
+  .cli-head{text-align:center;margin-bottom:46px}
+  .cli-head .eyebrow{margin-bottom:22px}
+  .cli-head h1{font-size:clamp(40px,5.6vw,68px);color:#fff;letter-spacing:-0.035em;line-height:1.02;margin-bottom:18px}
+  .cli-head p{font-size:clamp(16px,1.7vw,19px);color:var(--fg-d2);max-width:520px;margin:0 auto;letter-spacing:-0.01em;line-height:1.55}
+
+  /* lookup card */
+  .lookup{background:linear-gradient(160deg,var(--ink-card),var(--ink-2));border:1px solid var(--line-d);
+    border-radius:24px;padding:40px;box-shadow:var(--sh-card);position:relative;overflow:hidden}
+  .lookup::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(460px 300px at 50% 0,rgba(255,255,255,.06),transparent 64%)}
+  .lookup form{position:relative;display:flex;flex-direction:column;gap:8px}
+  .lookup label{font-size:13px;font-weight:600;color:var(--fg-d2);letter-spacing:-0.01em;text-transform:uppercase;
+    letter-spacing:0.06em;font-size:11.5px}
+  .field-row{display:flex;gap:12px}
+  .cpf-input{flex:1;background:#000;border:1.5px solid var(--line-d2);border-radius:14px;color:#fff;
+    font-family:var(--sans);font-size:21px;font-weight:600;letter-spacing:0.04em;padding:16px 18px;
+    transition:border-color .2s,box-shadow .2s;width:100%;-webkit-appearance:none}
+  .cpf-input::placeholder{color:var(--fg-d3);font-weight:500;letter-spacing:0.02em}
+  .cpf-input:focus{outline:none;border-color:rgba(255,255,255,.55);box-shadow:0 0 0 4px rgba(255,255,255,.07)}
+  .lookup .btn-go{background:#fff;color:#000;border:none;padding:0 28px;border-radius:14px;font-weight:700;
+    font-size:16px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;white-space:nowrap;
+    transition:transform .2s var(--ease),box-shadow .3s,background .2s}
+  .lookup .btn-go svg{width:18px;height:18px}
+  .lookup .btn-go:hover{transform:translateY(-2px);box-shadow:0 14px 30px -10px rgba(255,255,255,.4);background:#e8e8e8}
+  .lookup .hint{margin-top:14px;font-size:13px;color:var(--fg-d3);display:flex;align-items:center;gap:8px;line-height:1.5}
+  .lookup .hint svg{width:15px;height:15px;flex-shrink:0;color:var(--fg-d2)}
+  .demo-cpfs{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .demo-cpfs span{font-size:12px;color:var(--fg-d3)}
+  .demo-chip{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--fg-d2);background:rgba(255,255,255,.05);
+    border:1px solid var(--line-d2);border-radius:980px;padding:6px 13px;cursor:pointer;transition:all .18s;letter-spacing:0.02em}
+  .demo-chip:hover{border-color:rgba(255,255,255,.4);color:#fff}
+
+  /* error */
+  .cli-error{display:none;margin-top:18px;padding:15px 18px;border-radius:14px;
+    background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.28);color:#ffb3b3;font-size:14.5px;
+    align-items:center;gap:10px;line-height:1.45}
+  .cli-error.show{display:flex}
+  .cli-error svg{width:18px;height:18px;flex-shrink:0}
+
+  /* result */
+  .result{display:none;margin-top:30px}
+  .result.show{display:block;animation:resIn .6s var(--ease) both}
+  @keyframes resIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .res-card{background:linear-gradient(160deg,var(--ink-card),var(--ink-2));border:1px solid var(--line-d);
+    border-radius:24px;padding:36px;box-shadow:var(--sh-card)}
+  .res-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;
+    padding-bottom:26px;border-bottom:1px solid var(--line-d);margin-bottom:28px}
+  .res-name{font-size:13px;color:var(--fg-d3);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+  .res-name b{display:block;font-size:22px;color:#fff;letter-spacing:-0.02em;text-transform:none;margin-top:5px;font-weight:600}
+  .status-pill{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:980px;font-size:13.5px;
+    font-weight:600;letter-spacing:-0.01em;background:rgba(255,255,255,.08);border:1px solid var(--line-d2);color:#fff;white-space:nowrap}
+  .status-pill i{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(255,255,255,.7);flex-shrink:0}
+  .status-pill.done{background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.35);color:#7CF0AD}
+  .status-pill.done i{background:var(--wa);box-shadow:0 0 10px rgba(37,211,102,.7)}
+
+  .res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-d);
+    border:1px solid var(--line-d);border-radius:16px;overflow:hidden;margin-bottom:36px}
+  .res-grid div{background:var(--ink-2);padding:18px 20px}
+  .res-grid dt{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--fg-d3);margin-bottom:8px;font-weight:600}
+  .res-grid dd{font-size:17px;color:#fff;font-weight:600;letter-spacing:-0.01em}
+  .res-grid dd small{display:block;font-size:12px;color:var(--fg-d2);font-weight:500;margin-top:3px;letter-spacing:0}
+
+  /* timeline / steps */
+  .steps-h{font-size:11.5px;text-transform:uppercase;letter-spacing:0.1em;color:var(--fg-d3);font-weight:600;margin-bottom:24px}
+  .steps{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:0}
+  .steps::before{content:'';position:absolute;top:13px;left:7%;right:7%;height:2px;background:var(--line-d2);z-index:0}
+  .steps .fill{position:absolute;top:13px;left:7%;height:2px;background:#fff;z-index:1;
+    box-shadow:0 0 12px rgba(255,255,255,.5);transition:width 1s var(--ease) .2s;border-radius:2px}
+  .step{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:11px;text-align:center}
+  .step .dot{width:28px;height:28px;border-radius:50%;background:var(--ink-3);border:2px solid var(--line-d2);
+    display:grid;place-items:center;color:var(--fg-d3);transition:all .4s var(--ease)}
+  .step .dot svg{width:14px;height:14px}
+  .step .lbl{font-size:11.5px;color:var(--fg-d3);font-weight:600;letter-spacing:-0.005em;max-width:74px;line-height:1.25;transition:color .3s}
+  .step.done .dot{background:#fff;border-color:#fff;color:#000;box-shadow:0 0 0 4px rgba(255,255,255,.1)}
+  .step.done .lbl{color:var(--fg-d)}
+  .step.current .dot{background:#000;border-color:#fff;color:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.14),0 0 18px rgba(255,255,255,.35)}
+  .step.current .dot::after{content:'';position:absolute;width:28px;height:28px;border-radius:50%;
+    border:2px solid #fff;animation:ping 1.8s var(--ease) infinite}
+  @keyframes ping{0%{transform:scale(1);opacity:.7}80%,100%{transform:scale(1.7);opacity:0}}
+  .step.current .lbl{color:#fff}
+
+  .res-foot{margin-top:34px;padding-top:26px;border-top:1px solid var(--line-d);
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .res-foot .note{font-size:13px;color:var(--fg-d3);display:flex;align-items:center;gap:8px;max-width:380px;line-height:1.5}
+  .res-foot .note svg{width:15px;height:15px;flex-shrink:0;color:var(--fg-d2)}
+  .res-foot .btn-wa{padding:12px 20px;font-size:14.5px}
+
+  @media(max-width:680px){
+    .cli{padding:118px 0 70px}
+    .lookup,.res-card{padding:26px 20px;border-radius:20px}
+    .field-row{flex-direction:column}
+    .lookup .btn-go{padding:15px;justify-content:center}
+    .res-grid{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr;gap:14px;position:relative}
+    .steps::before{display:none}
+    .steps .fill{display:none}
+    /* trilho vertical conectando os passos */
+    .steps::after{content:'';position:absolute;left:13px;top:14px;bottom:14px;width:2px;background:var(--line-d2);z-index:0}
+    .step{flex-direction:row;justify-content:flex-start;text-align:left;gap:14px;align-items:center;z-index:1}
+    .step .lbl{max-width:none;font-size:14.5px}
+    .step .dot{flex-shrink:0}
+    .step.current .dot::after{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="wrap">
+    <a href="index.html#top" class="brand" aria-label="GM Troféus e Medalhas">
+      <img src="assets/logo-white.png" alt="GM Troféus e Medalhas">
+    </a>
+    <div class="nlinks">
+      <a href="index.html#showcase">A fábrica</a>
+      <a href="index.html#processo">Como funciona</a>
+      <a href="index.html#porque">Por que a GM</a>
+      <a href="Eventos.html">Eventos</a>
+      <a href="Cliente.html" class="active">Cliente</a>
+    </div>
+    <a class="btn btn-wa nav-cta" href="index.html#contato">Orçamento</a>
+    <div class="hamb" id="hamb"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- CLIENTE -->
+<main class="cli">
+  <div class="wrap">
+    <div class="cli-head">
+      <span class="eyebrow"><i></i> Acompanhamento de pedido</span>
+      <h1>Área do Cliente</h1>
+      <p>Já fez seu pedido com a GM? Consulte com seu CPF e acompanhe a produção em tempo real, do orçamento à entrega.</p>
+    </div>
+
+    <!-- LOOKUP -->
+    <section class="lookup">
+      <form id="cpfForm" autocomplete="off" novalidate>
+        <label for="cpf">Digite seu CPF</label>
+        <div class="field-row">
+          <input class="cpf-input" id="cpf" name="cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" aria-label="CPF">
+          <button class="btn-go" type="submit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            Consultar
+          </button>
+        </div>
+        <div class="cli-error" id="cliError">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          <span id="cliErrorMsg">Não encontramos nenhum pedido para este CPF. Confira os números ou fale com a gente no WhatsApp.</span>
+        </div>
+      </form>
+      <p class="hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        Seus dados são usados apenas para localizar o pedido. Não compartilhamos com terceiros.
+      </p>
+      <div class="demo-cpfs">
+        <span>Exemplos para testar:</span>
+        <button class="demo-chip" type="button" data-cpf="12345678909">123.456.789-09</button>
+        <button class="demo-chip" type="button" data-cpf="98765432100">987.654.321-00</button>
+        <button class="demo-chip" type="button" data-cpf="11122233344">111.222.333-44</button>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section class="result" id="result" aria-live="polite">
+      <div class="res-card">
+        <div class="res-top">
+          <div>
+            <div class="res-name">Pedido de<b id="rName">—</b></div>
+          </div>
+          <div class="status-pill" id="rPill"><i></i> <span id="rStatus">—</span></div>
+        </div>
+
+        <dl class="res-grid">
+          <div><dt>Nº do pedido</dt><dd id="rOrder">—</dd></div>
+          <div><dt>Data do pedido</dt><dd id="rDate">—</dd></div>
+          <div><dt>Prazo de entrega</dt><dd id="rDeadline">—<small>em contrato</small></dd></div>
+        </dl>
+
+        <div class="steps-h">Status da produção</div>
+        <div class="steps" id="steps">
+          <div class="fill" id="stepsFill" style="width:0"></div>
+          <!-- steps injected by JS -->
+        </div>
+
+        <div class="res-foot">
+          <p class="note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span id="rNote">Atualizamos o status a cada etapa concluída na fábrica.</span>
+          </p>
+          <a class="btn btn-wa" id="rWa" href="https://api.whatsapp.com/send?phone=5514991021312" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            Falar sobre meu pedido
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="assets/logo-white.png" alt="GM Troféus e Medalhas">
+        <p>Fábrica de troféus, medalhas e brindes personalizados em Jaú/SP. Transformamos conquistas em peças que ficam pra história, e prazos em compromisso assinado.</p>
+        <div class="socials">
+          <a href="https://www.instagram.com/gmtrofeus/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.facebook.com/gmtrofeus" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h-3a4 4 0 0 0-4 4v3H5v4h3v7h4v-7h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="https://api.whatsapp.com/send?phone=5514991021312" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Navegação</h4>
+        <a href="index.html#showcase">A fábrica</a>
+        <a href="index.html#processo">Como funciona</a>
+        <a href="Eventos.html">Eventos</a>
+        <a href="Cliente.html">Cliente</a>
+      </div>
+      <div>
+        <h4>Categorias</h4>
+        <a href="index.html#portfolio">Corrida de rua</a>
+        <a href="index.html#portfolio">Mountain bike</a>
+        <a href="index.html#portfolio">Artes marciais</a>
+        <a href="index.html#portfolio">Outros esportes</a>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <a href="https://api.whatsapp.com/send?phone=5514991021312" target="_blank" rel="noopener">(14) 99102-1312</a>
+        <a href="mailto:contato@gmtrofeus.com.br">contato@gmtrofeus.com.br</a>
+        <p class="fl">Rua Ronald Antonio Franceschi, 240<br>Distrito Industrial · Jaú/SP</p>
+        <p class="fl">Seg–Sex · 9h às 18h</p>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 GM Troféus e Medalhas · Todos os direitos reservados</span>
+      <span>Jaú · São Paulo · Brasil</span>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOAT WA -->
+<a class="float-wa" href="https://api.whatsapp.com/send?phone=5514991021312&text=Ol%C3%A1!%20Quero%20garantir%20minha%20data%20na%20produ%C3%A7%C3%A3o." target="_blank" rel="noopener" aria-label="Fale conosco no WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+</a>
+
+<script src="cliente.js"></script>
+<script src="nav.js"></script>
+</body>
+</html>
