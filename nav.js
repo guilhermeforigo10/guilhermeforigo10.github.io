@@ -22,7 +22,7 @@
   // CTA WhatsApp
   var cta = document.createElement('a');
   cta.className = 'mm-cta';
-  cta.href = 'GM%20Troféus.html#contato';
+  cta.href = 'index.html#contato';
   cta.textContent = 'Pedir orçamento';
   menu.appendChild(cta);
 
