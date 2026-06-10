@@ -1,4 +1,4 @@
-let THREE = null;
+import * as THREE from 'three';
 
 /* =========================================================
    GM TROFÉUS — MEDAL STAGE (scroll-scrubbed, full viewport)
@@ -80,7 +80,7 @@ if (canvas && showcase) {
     const vh = window.innerHeight;
     // Square source: fit by height, push the piece to the RIGHT so the
     // left text column stays clear. Mobile centers it, higher and smaller.
-    if (isMobile())  return { scale: (vh / SRC_H) * 0.46, ox: 0.0,  oy: -0.13 };
+    if (isMobile())  return { scale: (vh / SRC_H) * 0.34, ox: 0.0,  oy: -0.18 };
     if (isTablet())  return { scale: (vh / SRC_H) * 0.918, ox: 0.15, oy: 0.0 };
     return                  { scale: (vh / SRC_H) * 1.044, ox: 0.205, oy: 0.0 };
   }
@@ -96,8 +96,7 @@ if (canvas && showcase) {
   /* ============================================================
      BACKEND: three — live 3D medal placeholder (transparent)
   ============================================================ */
-  async function initThree() {
-    if (!THREE) { THREE = await import('three'); }
+  function initThree() {
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -308,10 +307,6 @@ if (canvas && showcase) {
     v.addEventListener('error', () => { console.warn('[medal] vídeo hospedado não carregou:', v.error && v.error.message); });
     // prime decode so scroll-seeking is responsive
     v.addEventListener('loadeddata', () => { v.play().then(() => { v.pause(); v.currentTime = 0; }).catch(() => {}); }, { once: true });
-    // desenha o primeiro quadro assim que houver dados (mesmo sem scroll, pra não ficar preto no topo)
-    v.addEventListener('loadeddata', () => { try { drawCover(ctx, v); } catch(e){} }, { once: true });
-    v.addEventListener('seeked', () => { try { drawCover(ctx, v); } catch(e){} });
-    v.addEventListener('canplay', () => { try { drawCover(ctx, v); } catch(e){} }, { once: true });
     // se o navegador suporta, redesenha exatamente o quadro após cada seek
     if ('requestVideoFrameCallback' in v) {
       const onVF = () => { drawCover(ctx, v); v.requestVideoFrameCallback(onVF); };

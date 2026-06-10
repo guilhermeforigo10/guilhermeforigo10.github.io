@@ -69,7 +69,10 @@
     const scale = Math.min(cw / sw, ch / sh) * 0.94; // respiro p/ nunca encostar nas bordas
     const dw = sw * scale, dh = sh * scale;
     const dx = (cw - dw) / 2;          // centralizado na horizontal
-    const dy = (ch - dh) * 0.30;       // perto do topo (emenda), com respiro p/ não cortar a fita
+    // no mobile a fita cola no topo (emenda com a seção branca acima);
+    // no desktop mantém um respiro maior.
+    const dyFactor = (window.innerWidth < 700) ? 0.0 : 0.30;
+    const dy = (ch - dh) * dyFactor;
     ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
   }
 

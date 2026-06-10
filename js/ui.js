@@ -110,15 +110,15 @@
   // Para adicionar outra peça, basta uma nova linha { cat, label, src }.
   const base = 'assets/portfolio/';
   const items = [
-    { cat: 'rua',    label: 'Trail Race Rio das Flores · 15KM',    src: base + 'trail-race-rio-das-flores.jpg' },
-    { cat: 'rua',    label: 'Corrida das Fadas',                    src: base + 'corrida-das-fadas.jpg' },
-    { cat: 'rua',    label: 'Agosto Lilás · TBF',                   src: base + 'agosto-lilas.jpg' },
-    { cat: 'rua',    label: '4ª Corrida de Macatuba',              src: base + 'corrida-macatuba.jpg' },
-    { cat: 'rua',    label: 'tfsports · Rotary Jarinu',            src: base + 'tfsports-rotary-jarinu.jpg' },
-    { cat: 'rua',    label: 'Leomosk Run · 2025',                  src: base + 'leomosk-run.jpg' },
-    { cat: 'rua',    label: 'Club 21 RUN · tfsports',              src: base + 'club-21-run.jpg' },
-    { cat: 'outros', label: 'Inter Movimento · Shopping Interlagos', src: base + 'inter-movimento.jpg' },
-    { cat: 'outros', label: 'OAB por Elas · 5KM',                  src: base + 'oab-por-elas.jpg' },
+    { cat: 'rua',    label: 'tfsports · Rotary Jarinu',            src: base + 'tfsports-rotary-jarinu.png' },
+    { cat: 'rua',    label: 'Corrida das Fadas',                    src: base + 'corrida-das-fadas.png' },
+    { cat: 'rua',    label: 'Agosto Lilás · TBF',                   src: base + 'agosto-lilas.png' },
+    { cat: 'rua',    label: '4ª Corrida de Macatuba',              src: base + 'corrida-macatuba.png' },
+    { cat: 'rua',    label: 'Trail Race Rio das Flores · 15KM',    src: base + 'trail-race-rio-das-flores-v2.png' },
+    { cat: 'rua',    label: 'Leomosk Run · 2025',                  src: base + 'leomosk-run.png' },
+    { cat: 'rua',    label: 'Club 21 RUN · tfsports',              src: base + 'club-21-run.png' },
+    { cat: 'outros', label: 'Inter Movimento · Shopping Interlagos', src: base + 'inter-movimento.png' },
+    { cat: 'outros', label: 'OAB por Elas · 5KM',                  src: base + 'oab-por-elas.png' },
   ];
   const gallery = $('#gallery');
   const waBase = 'https://api.whatsapp.com/send?phone=5514991021312&text=';
