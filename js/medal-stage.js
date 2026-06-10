@@ -42,8 +42,8 @@ const canvas = document.getElementById('medalStage');
 const showcase = document.getElementById('showcase');
 if (canvas && showcase) {
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const isMobile = () => window.innerWidth < 760;
-  const isTablet = () => window.innerWidth >= 760 && window.innerWidth < 1180;
+  const isMobile = () => window.matchMedia('(max-width: 759px)').matches;
+  const isTablet = () => window.matchMedia('(min-width: 760px) and (max-width: 1179px)').matches;
   const scTexts = [...showcase.querySelectorAll('.sctext')];
 
   /* scroll progress across hero + showcase (0 → 1) */
